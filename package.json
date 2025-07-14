@@ -1,0 +1,35 @@
+{
+  "name": "create-farcaster-miniapp",
+  "version": "1.0.0",
+  "description": "Community-driven CLI tool for scaffolding Farcaster MiniApps.",
+  "main": "bin/cli.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "create-farcaster-miniapp": "bin/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Emmo00/create-farcaster-miniapp.git"
+  },
+  "keywords": [
+    "cli",
+    "farcaster",
+    "miniapps",
+    "scaffolder"
+  ],
+  "author": "Emmo00 <nwaforemmanuel005@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Emmo00/create-farcaster-miniapp/issues"
+  },
+  "homepage": "https://github.com/Emmo00/create-farcaster-miniapp#readme",
+  "dependencies": {
+    "enquirer": "^2.4.1",
+    "figlet": "^1.8.2",
+    "gradient-string": "^3.0.0",
+    "minimist": "^1.2.8"
+  }
+}

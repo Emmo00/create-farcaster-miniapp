@@ -2,7 +2,7 @@
   "templates": [
     {
       "name": "celo-factory",
-      "description": "Basic Frontend + Hardhat for building on CELO",
+      "description": "Basic React Frontend + Hardhat for building on CELO",
       "repository": "https://github.com/celo-org/farcaster-template",
       "stack": {
         "frontend": ["react"],

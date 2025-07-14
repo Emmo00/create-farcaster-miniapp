@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Community-driven CLI tool for scaffolding Farcaster MiniApps.",
   "main": "bin/cli.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -27,9 +27,12 @@
   },
   "homepage": "https://github.com/Emmo00/create-farcaster-miniapp#readme",
   "dependencies": {
+    "degit": "^2.8.4",
     "enquirer": "^2.4.1",
     "figlet": "^1.8.2",
     "gradient-string": "^3.0.0",
-    "minimist": "^1.2.8"
+    "minimist": "^1.2.8",
+    "ora": "^8.2.0",
+    "picocolors": "^1.1.1"
   }
 }

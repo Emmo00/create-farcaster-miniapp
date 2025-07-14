@@ -1,7 +1,7 @@
-import gradient from "gradient-string";
-import figlet from "figlet";
+const gradient = require("gradient-string").default;
+const figlet = require("figlet");
 
-export function renderTitle() {
+function renderTitle() {
   const figletConfig = {
     font: "Pagga",
     horizontalLayout: "fitted",
@@ -17,3 +17,24 @@ export function renderTitle() {
   console.log(title);
   console.log();
 }
+
+/**
+ * Render a CLI footer after scaffold completes.
+ * @param {string} projectName - The folder name the project was created in.
+ */
+function renderFooter(projectName) {
+  console.log();
+  console.log("✅ Scaffold complete.");
+  console.log(`📂 Your project is ready in ./${projectName}`);
+  console.log();
+  console.log(`👉 Next steps:`);
+  console.log(`   cd ${projectName}`);
+  console.log();
+  console.log(gradient.mind("🚀 Happy Building!!!"));
+  console.log();
+}
+
+module.exports = {
+  renderTitle,
+  renderFooter,
+};

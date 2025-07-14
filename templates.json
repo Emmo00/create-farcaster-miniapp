@@ -4,7 +4,7 @@
       "name": "celo-factory",
       "description": "Basic Frontend + Hardhat for building on CELO",
       "repository": "https://github.com/celo-org/farcaster-template",
-      "frameworks": {
+      "stack": {
         "frontend": ["react"],
         "backend": null,
         "smartContract": ["hardhat", "solidity"]
@@ -15,8 +15,8 @@
       "name": "base-minikit-starter",
       "description": "Opinionated Farcaster MiniApp Next.js Template using Base Minikit",
       "repository": "https://github.com/builders-garden/base-minikit-starter",
-      "frameworks": {
-        "frontend": ["next", "onchainkit"],
+      "stack": {
+        "frontend": ["next", "minikit"],
         "backend": ["next"],
         "smartContract": null
       }

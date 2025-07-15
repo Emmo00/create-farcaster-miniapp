@@ -57,10 +57,10 @@ async function downloadTemplate(templateRepoUrl, destinationPath) {
  *   name: string,
  *   description: string,
  *   repository: string,
- *   frameworks: {
- *     frontend: string,
- *     backend: string,
- *     smartContract: string
+ *   stack: {
+ *     frontend: string[] | null,
+ *     backend: string[] | null,
+ *     smartContract: string[] | null,
  *   }
  * }>>} A promise that resolves to an array of template objects.
  * @throws {Error} If the templates cannot be fetched from the registry.

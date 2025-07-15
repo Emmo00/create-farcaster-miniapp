@@ -34,7 +34,6 @@ create-farcaster-miniapp [options]
 
 ```
 --template <name>       Download and use a specific template
---search   <query>      Search for available templates
 --frontend <name>       Specify frontend framework
 --backend <name>        Specify backend framework
 --smart-contract <name>  Specify smart contract template
@@ -50,8 +49,8 @@ npx create-farcaster-miniapp
 # Use a known template directly
 npx create-farcaster-miniapp --template riff-factory
 
-# Search templates
-npx create-farcaster-miniapp --search react
+# Search and Select templates
+npx create-farcaster-miniapp --template
 
 # Manual selection by stack
 npx create-farcaster-miniapp --frontend react --smart-contract hardhat
@@ -92,9 +91,9 @@ We encourage the community to add their own MiniApp templates!
 
 ---
 
-## 🧠 Template Framework Metadata
+## 🧠 Template Stack Metadata
 
-Each template defines its stack via a `frameworks` object, so users can search and filter intelligently:
+Each template defines its stack via a `stack` object, so users can search and filter intelligently:
 
 ```json
 "stack": {

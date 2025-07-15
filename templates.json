@@ -10,7 +10,6 @@
         "smartContract": ["hardhat", "solidity"]
       }
     },
-
     {
       "name": "base-minikit-starter",
       "description": "Opinionated Farcaster MiniApp Next.js Template using Base Minikit",

@@ -1,0 +1,451 @@
+diff --git a/README.md b/README.md
+index b2a859a..4b0423a 100644
+--- a/README.md
++++ b/README.md
+@@ -34,7 +34,6 @@ create-farcaster-miniapp [options]
+ 
+ ```
+ --template <name>       Download and use a specific template
+---search   <query>      Search for available templates
+ --frontend <name>       Specify frontend framework
+ --backend <name>        Specify backend framework
+ --smart-contract <name>  Specify smart contract template
+@@ -50,8 +49,8 @@ npx create-farcaster-miniapp
+ # Use a known template directly
+ npx create-farcaster-miniapp --template riff-factory
+ 
+-# Search templates
+-npx create-farcaster-miniapp --search react
++# Search and Select templates
++npx create-farcaster-miniapp --template
+ 
+ # Manual selection by stack
+ npx create-farcaster-miniapp --frontend react --smart-contract hardhat
+@@ -92,9 +91,9 @@ We encourage the community to add their own MiniApp templates!
+ 
+ ---
+ 
+-## 🧠 Template Framework Metadata
++## 🧠 Template Stack Metadata
+ 
+-Each template defines its stack via a `frameworks` object, so users can search and filter intelligently:
++Each template defines its stack via a `stack` object, so users can search and filter intelligently:
+ 
+ ```json
+ "stack": {
+diff --git a/bin/cli.js b/bin/cli.js
+index 48b4bcb..1d0d4b0 100644
+--- a/bin/cli.js
++++ b/bin/cli.js
+@@ -1,10 +1,6 @@
+ #!/usr/bin/env node
+ const parseArguments = require("minimist");
+-const {
+-  runFullCLI,
+-  runSearchCLI,
+-  runTemplateDownloadCLI,
+-} = require("../src/prompts.js");
++const { runFullCLI, runTemplateDownloadCLI } = require("../src/prompts.js");
+ const { renderTitle } = require("../src/utils.js");
+ const logger = require("../src/logger.js");
+ 
+@@ -15,7 +11,6 @@ renderTitle();
+  *
+  * @type {{
+  *   template?: string,
+- *   search?: string,
+  *   frontend?: string,
+  *   backend?: string,
+  *   smartContract?: string
+@@ -24,52 +19,45 @@ renderTitle();
+  * }}
+  */
+ const args = parseArguments(process.argv.slice(2));
+-const { template, search, frontend, backend, smartContract, help, h } = args;
++const { template, frontend, backend, smartContract, help, h } = args;
+ 
+ if (help || h) {
+   console.log(`
+-    Usage: create-farcaster-miniapp [options]
++    Usage: create-farcaster-miniapp [options] [destination]
++
++    destination:
++        Name of directory for project creation.
+ 
+     Options:
++        --template              Download and use a template
+         --template <name>       Download and use a specific template
+-        --template <name>       Download and use a specific template
+-        --search   <query>      Search for available templates
+         --frontend <name>       Specify frontend framework
+         --backend <name>        Specify backend framework
+-        --smart-contract <name>  Specify smart contract template
++        --smart-contract <name> Specify smart contract template
+         --help, -h              Show help
+ 
+     Examples:
+         create-farcaster-miniapp
+         create-farcaster-miniapp --template react-hardhat
+-        create-farcaster-miniapp --search react
+-        create-farcaster-miniapp --search
+-        create-farcaster-miniapp --frontend react --smart-Contract hardhat
++        create-farcaster-miniapp --frontend react --smart-contract hardhat
+     `);
+   process.exit(0);
+ }
+ 
+-if (template) {
+-  const destinationFolder = args._[0] ?? null;
++const destinationFolder = args._[0] ?? null;
+ 
++if (template) {
+   runTemplateDownloadCLI(template, destinationFolder)
+     .then(() => process.exit(0))
+     .catch((error) => {
+-      logger.fail(error.message ?? "An Unexpected error occured");
+-      return process.exit(1);
+-    });
+-} else if (search) {
+-  runSearchCLI()
+-    .then(() => process.exit(0))
+-    .catch((error) => {
+-      logger.fail(error.message ?? "An Unexpected error occured");
++      logger.error(error.message ?? "An Unexpected error occured");
+       return process.exit(1);
+     });
+ } else {
+-  runFullCLI({ frontend, backend, smartContract })
++  runFullCLI({ frontend, backend, smartContract, destinationFolder })
+     .then(() => process.exit(0))
+     .catch((error) => {
+-      logger.fail(error.message ?? "An Unexpected error occured");
++      logger.error(error.message ?? "An Unexpected error occured");
+       return process.exit(1);
+     });
+ }
+diff --git a/src/downloader.js b/src/downloader.js
+index 4d465eb..8e87cb6 100644
+--- a/src/downloader.js
++++ b/src/downloader.js
+@@ -57,10 +57,10 @@ async function downloadTemplate(templateRepoUrl, destinationPath) {
+  *   name: string,
+  *   description: string,
+  *   repository: string,
+- *   frameworks: {
+- *     frontend: string,
+- *     backend: string,
+- *     smartContract: string
++ *   stack: {
++ *     frontend: string[] | null,
++ *     backend: string[] | null,
++ *     smartContract: string[] | null,
+  *   }
+  * }>>} A promise that resolves to an array of template objects.
+  * @throws {Error} If the templates cannot be fetched from the registry.
+diff --git a/src/prompts.js b/src/prompts.js
+index 7f4baf4..e48d2e8 100644
+--- a/src/prompts.js
++++ b/src/prompts.js
+@@ -1,4 +1,4 @@
+-const { Input, AutoComplete } = require("enquirer");
++const { Input, AutoComplete, Confirm } = require("enquirer");
+ const logger = require("./logger.js");
+ const { getCommunityTemplates, downloadTemplate } = require("./downloader.js");
+ const { isDirectoryEmpty } = require("./fileio.js");
+@@ -11,22 +11,244 @@ const { renderFooter } = require("./utils.js");
+  * @async
+  * @function
+  * @param {Object} params - The parameters for running the CLI.
+- * @param {Function} params.frontend - The function to handle frontend setup.
+- * @param {Function} params.backend - The function to handle backend setup.
+- * @param {Function} params.smartContract - The function to handle smart contract setup.
++ * @param {string} params.frontend - The frontend stack query.
++ * @param {string} params.backend - The backend stack query.
++ * @param {string} params.smartContract - The smart contract stack query.
++ * @param {string} destinationFolder - The destination folder for the scaffold.
+  * @returns {Promise<void>} Resolves when the CLI process is complete.
+  */
+-async function runFullCLI({ frontend, backend, smartContract }) {}
++async function runFullCLI(
++  { frontend, backend, smartContract },
++  destinationFolder
++) {
++  let template, templateId;
+ 
+-/**
+- * Runs a search operation in the CLI.
+- *
+- * @async
+- * @function
+- * @param {string} search - The search query string.
+- * @returns {Promise<void>} A promise that resolves when the search operation is complete.
+- */
+-async function runSearchCLI(search) {}
++  if (!destinationFolder) {
++    destinationFolder = await new Input({
++      message: "Enter the name of your project",
++      initial: "awesome-miniapp",
++    }).run();
++  }
++
++  if (!isDirectoryEmpty(destinationFolder)) {
++    throw new Error("Directory not empty.");
++  }
++
++  logger.start("Getting Templates");
++
++  let templates = await getCommunityTemplates();
++
++  logger.succeed();
++
++  // check of the user didnt pass any query filters
++  if (
++    (!frontend || frontend === true) &&
++    (!backend || backend === true) &&
++    (!smartContract || smartContract === true)
++  ) {
++    // ask for all of them
++    logger.start("Mining some Bitcoin🙂");
++
++    const availableFrontendStack =
++      templates
++        .filter(
++          (template) =>
++            template.stack.frontend !== null &&
++            template.stack.frontend.length > 0
++        )
++        .map((template) => template.stack.frontend)
++        .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
++    const availableBackendStack =
++      templates
++        .filter(
++          (template) =>
++            template.stack.backend !== null && template.stack.backend.length > 0
++        )
++        .map((template) => template.stack.backend)
++        .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
++    const availableSmartContractStack =
++      templates
++        .filter(
++          (template) =>
++            template.stack.smartContract !== null &&
++            template.stack.smartContract.length > 0
++        )
++        .map((template) => template.stack.smartContract)
++        .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
++
++    logger.succeed();
++
++    if (availableFrontendStack) {
++      // Run fuzzy find frontend framework
++      /**
++       * @type {string}
++       */
++      frontend = await new AutoComplete({
++        name: "frontend",
++        message: "Choose frontend framework",
++        limit: 10,
++        multiple: false,
++        footer() {
++          return pc.gray(
++            "\n(Start Typing/Scroll up and down to reveal more choices)"
++          );
++        },
++        choices: ["(Don't Specify)", ...availableFrontendStack],
++      }).run();
++
++      frontend = frontend === "(Don't Specify)" ? null : frontend;
++    }
++
++    if (availableBackendStack) {
++      // Run fuzzy find backend framework
++      /**
++       * @type {string}
++       */
++      backend = await new AutoComplete({
++        name: "backend",
++        message: "Choose Backend framework",
++        limit: 10,
++        multiple: false,
++        footer() {
++          return pc.gray(
++            "\n(Start Typing/Scroll up and down to reveal more choices)"
++          );
++        },
++        choices: ["(None)", ...availableBackendStack],
++      }).run();
++
++      backend = backend === "(None)" ? null : backend;
++    }
++
++    if (availableSmartContractStack) {
++      // Run fuzzy find smart contract framework
++      /**
++       * @type {string}
++       */
++      smartContract = await new AutoComplete({
++        name: "Smart Contract",
++        message: "Choose Smart Contract framework",
++        limit: 10,
++        multiple: false,
++        footer() {
++          return pc.gray(
++            "\n(Start Typing/Scroll up and down to reveal more choices)"
++          );
++        },
++        choices: ["(None)", ...availableSmartContractStack],
++      }).run();
++
++      smartContract = smartContract === "(None)" ? null : smartContract;
++    }
++  }
++
++  // filter templates by queries
++  logger.start("Running your query");
++  // frontend
++  if (frontend && frontend !== true)
++    templates = templates
++      .filter((template) => template.stack.frontend !== null)
++      .filter((template) =>
++        template.stack.frontend
++          .map((f) => f.toLowerCase())
++          .includes(frontend.toLowerCase())
++      );
++  // backend
++  if (backend && backend !== true)
++    templates = templates
++      .filter((template) => template.stack.backend !== null)
++      .filter((template) =>
++        template.stack.backend
++          .map((b) => b.toLowerCase())
++          .includes(backend.toLowerCase())
++      );
++  // smart contract
++  if (smartContract && smartContract !== true)
++    templates = templates
++      .filter((template) => template.stack.smartContract !== null)
++      .filter((template) =>
++        template.stack.smartContract
++          .map((s) => s.toLowerCase())
++          .includes(smartContract.toLowerCase())
++      );
++
++  logger.succeed();
++
++  if (templates.length === 0) {
++    throw new Error(
++      `No templates found for your query: ${
++        frontend ? `\nFrontend: ${frontend}` : ""
++      }${backend ? `\nBackend: ${backend}` : ""}${
++        smartContract ? `\nSmart Contract: ${smartContract}` : ""
++      }`
++    );
++  }
++
++  if (templates.length === 1) {
++    template = templates[0];
++
++    logger.info("Found only 1 template with your specs:");
++    console.log();
++    logger.succeed(
++      `${template.name} ~ ${template.description} ${
++        template.stack.frontend
++          ? `\nFrontend: ${template.stack.frontend.join(", ")}`
++          : ""
++      }${
++        template.stack.backend
++          ? `\nBackend: ${template.stack.backend.join(", ")}`
++          : ""
++      }${
++        template.stack.smartContract
++          ? `\nSmart Contract: ${template.stack.smartContract.join(", ")}`
++          : ""
++      }\n`
++    );
++
++    if (
++      !(await new Confirm({
++        name: "confirm download",
++        message: "Want to use it?",
++      }).run())
++    ) {
++      console.info(`
++        ❌ No template found matching your selection.
++        
++        Found a cool template worth sharing? Contribute it to the community registry:
++        https://github.com/Emmo00/create-farcaster-miniapp
++      `);
++      process.exit();
++    }
++  } else {
++    // Run fuzzy find templates
++    const templateChoice = await new AutoComplete({
++      name: "template",
++      message: "Choose from Search Results",
++      limit: 10,
++      multiple: false,
++      footer() {
++        return pc.gray(
++          "\n(Start Typing/Scroll up and down to reveal more choices)"
++        );
++      },
++      choices: templates.map(
++        (template) =>
++          `${template.name} ~ ${pc.green(pc.italic(template.description))}`
++      ),
++    }).run();
++
++    templateId = templateChoice.split("~")[0].trim();
++    logger.start("Getting your Template...");
++
++    template = templates.find((t) => t.name == templateId);
++
++    logger.succeed("Found Template.");
++  }
++
++  await downloadTemplate(template.repository, destinationFolder);
++
++  renderFooter(destinationFolder);
++}
+ 
+ /**
+  * Runs the CLI process to download a specified template.
+@@ -46,7 +268,7 @@ async function runTemplateDownloadCLI(templateId, destinationFolder) {
+   }
+ 
+   if (!isDirectoryEmpty(destinationFolder)) {
+-      throw new Error("Directory not empty.");
++    throw new Error("Directory not empty.");
+   }
+ 
+   logger.start("Getting Templates");
+@@ -63,7 +285,9 @@ async function runTemplateDownloadCLI(templateId, destinationFolder) {
+       limit: 10,
+       multiple: false,
+       footer() {
+-        return pc.dim("\n(Scroll up and down to reveal more choices)");
++        return pc.gray(
++          "\n(Start Typing/Scroll up and down to reveal more choices)"
++        );
+       },
+       choices: templates.map(
+         (template) =>
+@@ -92,6 +316,5 @@ async function runTemplateDownloadCLI(templateId, destinationFolder) {
+ 
+ module.exports = {
+   runFullCLI,
+-  runSearchCLI,
+   runTemplateDownloadCLI,
+ };
+diff --git a/templates.json b/templates.json
+index 822d5f1..f157ff0 100644
+--- a/templates.json
++++ b/templates.json
+@@ -10,7 +10,6 @@
+         "smartContract": ["hardhat", "solidity"]
+       }
+     },
+-
+     {
+       "name": "base-minikit-starter",
+       "description": "Opinionated Farcaster MiniApp Next.js Template using Base Minikit",

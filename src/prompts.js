@@ -115,10 +115,10 @@ async function runFullCLI(
             '\n(Start Typing/Scroll up and down to reveal more choices)',
           );
         },
-        choices: ['(None)', ...availableBackendStack],
+        choices: ["(Don't Specify)", '(None)', ...availableBackendStack],
       }).run();
 
-      backend = backend === '(None)' ? null : backend;
+      backend = backend === "(Don't Specify)" ? null : backend;
     }
 
     if (availableSmartContractStack) {
@@ -136,10 +136,11 @@ async function runFullCLI(
             '\n(Start Typing/Scroll up and down to reveal more choices)',
           );
         },
-        choices: ['(None)', ...availableSmartContractStack],
+        choices: ["(Don't Specify)", '(None)', ...availableSmartContractStack],
       }).run();
 
-      smartContract = smartContract === '(None)' ? null : smartContract;
+      smartContract =
+        smartContract === "(Don't Specify)" ? null : smartContract;
     }
   }
 
@@ -154,8 +155,9 @@ async function runFullCLI(
           .map((f) => f.toLowerCase())
           .includes(frontend.toLowerCase()),
       );
+
   // backend
-  if (backend && backend !== true)
+  if (backend && backend !== '(None)' && backend !== true)
     templates = templates
       .filter((template) => template.stack.backend !== null)
       .filter((template) =>
@@ -163,8 +165,11 @@ async function runFullCLI(
           .map((b) => b.toLowerCase())
           .includes(backend.toLowerCase()),
       );
+  if (backend === '(None)')
+    templates = templates.filter((template) => template.stack.backend === null);
+
   // smart contract
-  if (smartContract && smartContract !== true)
+  if (smartContract && smartContract !== '(None)' && smartContract !== true)
     templates = templates
       .filter((template) => template.stack.smartContract !== null)
       .filter((template) =>
@@ -172,6 +177,10 @@ async function runFullCLI(
           .map((s) => s.toLowerCase())
           .includes(smartContract.toLowerCase()),
       );
+  if (smartContract === '(None)')
+    templates = templates.filter(
+      (template) => template.stack.smartContract === null,
+    );
 
   logger.succeed();
 

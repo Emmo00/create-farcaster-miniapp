@@ -1,6 +1,6 @@
-const { createDirectory } = require("./fileio");
-const logger = require("./logger.js");
-const degit = require("degit");
+const { createDirectory } = require('./fileio');
+const logger = require('./logger.js');
+const degit = require('degit');
 
 let cachedTemplates = null;
 
@@ -16,10 +16,10 @@ let cachedTemplates = null;
 async function downloadTemplate(templateRepoUrl, destinationPath) {
   // Extract the GitHub user/repo from full URL
   const match = templateRepoUrl.match(
-    /github\.com\/([^/]+)\/([^/]+)(?:\.git)?/
+    /github\.com\/([^/]+)\/([^/]+)(?:\.git)?/,
   );
   if (!match) {
-    throw new Error("Invalid GitHub repo URL");
+    throw new Error('Invalid GitHub repo URL');
   }
 
   const user = match[1];
@@ -34,7 +34,7 @@ async function downloadTemplate(templateRepoUrl, destinationPath) {
   // Ensure the destination exists
   createDirectory(destinationPath);
 
-  emitter.on("info", (info) => {
+  emitter.on('info', (info) => {
     logger.spinner.text = info.message;
   });
 
@@ -44,7 +44,7 @@ async function downloadTemplate(templateRepoUrl, destinationPath) {
   // Download the template into destination
   await emitter.clone(destinationPath);
 
-  logger.spinner.succeed()
+  logger.spinner.succeed();
 }
 
 /**
@@ -71,7 +71,7 @@ async function getCommunityTemplates() {
   }
 
   const templateRegistryURL =
-    "https://raw.githubusercontent.com/Emmo00/create-farcaster-miniapp/refs/heads/main/templates.json";
+    'https://raw.githubusercontent.com/Emmo00/create-farcaster-miniapp/refs/heads/main/templates.json';
 
   const response = await fetch(templateRegistryURL);
 
@@ -81,7 +81,7 @@ async function getCommunityTemplates() {
     return cachedTemplates;
   }
 
-  throw new Error("Cannot get templates from registry");
+  throw new Error('Cannot get templates from registry');
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Create a new directory if it doesn't already exist.
@@ -47,7 +47,7 @@ function isDirectoryEmpty(dirPath) {
  * @param {object} data
  */
 function writeJSON(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
 /**
@@ -56,7 +56,7 @@ function writeJSON(filePath, data) {
  * @returns {object}
  */
 function readJSON(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
 module.exports = {

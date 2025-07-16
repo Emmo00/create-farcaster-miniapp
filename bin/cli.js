@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-const parseArguments = require("minimist");
-const { runFullCLI, runTemplateDownloadCLI } = require("../src/prompts.js");
-const { renderTitle } = require("../src/utils.js");
-const logger = require("../src/logger.js");
+const parseArguments = require('minimist');
+const { runFullCLI, runTemplateDownloadCLI } = require('../src/prompts.js');
+const { renderTitle } = require('../src/utils.js');
+const logger = require('../src/logger.js');
 
 renderTitle();
 
@@ -50,14 +50,14 @@ if (template) {
   runTemplateDownloadCLI(template, destinationFolder)
     .then(() => process.exit(0))
     .catch((error) => {
-      logger.error(error.message ?? "An Unexpected error occured");
+      logger.error(error.message ?? 'An Unexpected error occured');
       return process.exit(1);
     });
 } else {
   runFullCLI({ frontend, backend, smartContract, destinationFolder })
     .then(() => process.exit(0))
     .catch((error) => {
-      logger.error(error.message ?? "An Unexpected error occured");
+      logger.error(error.message ?? 'An Unexpected error occured');
       return process.exit(1);
     });
 }

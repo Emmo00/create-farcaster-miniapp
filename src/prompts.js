@@ -1,9 +1,9 @@
-const { Input, AutoComplete, Confirm } = require("enquirer");
-const logger = require("./logger.js");
-const { getCommunityTemplates, downloadTemplate } = require("./downloader.js");
-const { isDirectoryEmpty } = require("./fileio.js");
-const pc = require("picocolors");
-const { renderFooter } = require("./utils.js");
+const { Input, AutoComplete, Confirm } = require('enquirer');
+const logger = require('./logger.js');
+const { getCommunityTemplates, downloadTemplate } = require('./downloader.js');
+const { isDirectoryEmpty } = require('./fileio.js');
+const pc = require('picocolors');
+const { renderFooter } = require('./utils.js');
 
 /**
  * Runs the full CLI process for the miniapp, including frontend, backend, and smart contract steps.
@@ -19,22 +19,22 @@ const { renderFooter } = require("./utils.js");
  */
 async function runFullCLI(
   { frontend, backend, smartContract },
-  destinationFolder
+  destinationFolder,
 ) {
   let template, templateId;
 
   if (!destinationFolder) {
     destinationFolder = await new Input({
-      message: "Enter the name of your project",
-      initial: "awesome-miniapp",
+      message: 'Enter the name of your project',
+      initial: 'awesome-miniapp',
     }).run();
   }
 
   if (!isDirectoryEmpty(destinationFolder)) {
-    throw new Error("Directory not empty.");
+    throw new Error('Directory not empty.');
   }
 
-  logger.start("Getting Templates");
+  logger.start('Getting Templates');
 
   let templates = await getCommunityTemplates();
 
@@ -47,14 +47,14 @@ async function runFullCLI(
     (!smartContract || smartContract === true)
   ) {
     // ask for all of them
-    logger.start("Mining some Bitcoin🙂");
+    logger.start('Mining some Bitcoin🙂');
 
     const availableFrontendStack =
       templates
         .filter(
           (template) =>
             template.stack.frontend !== null &&
-            template.stack.frontend.length > 0
+            template.stack.frontend.length > 0,
         )
         .map((template) => template.stack.frontend)
         .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
@@ -62,7 +62,8 @@ async function runFullCLI(
       templates
         .filter(
           (template) =>
-            template.stack.backend !== null && template.stack.backend.length > 0
+            template.stack.backend !== null &&
+            template.stack.backend.length > 0,
         )
         .map((template) => template.stack.backend)
         .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
@@ -71,7 +72,7 @@ async function runFullCLI(
         .filter(
           (template) =>
             template.stack.smartContract !== null &&
-            template.stack.smartContract.length > 0
+            template.stack.smartContract.length > 0,
         )
         .map((template) => template.stack.smartContract)
         .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
@@ -84,13 +85,13 @@ async function runFullCLI(
        * @type {string}
        */
       frontend = await new AutoComplete({
-        name: "frontend",
-        message: "Choose frontend framework",
+        name: 'frontend',
+        message: 'Choose frontend framework',
         limit: 10,
         multiple: false,
         footer() {
           return pc.gray(
-            "\n(Start Typing/Scroll up and down to reveal more choices)"
+            '\n(Start Typing/Scroll up and down to reveal more choices)',
           );
         },
         choices: ["(Don't Specify)", ...availableFrontendStack],
@@ -105,19 +106,19 @@ async function runFullCLI(
        * @type {string}
        */
       backend = await new AutoComplete({
-        name: "backend",
-        message: "Choose Backend framework",
+        name: 'backend',
+        message: 'Choose Backend framework',
         limit: 10,
         multiple: false,
         footer() {
           return pc.gray(
-            "\n(Start Typing/Scroll up and down to reveal more choices)"
+            '\n(Start Typing/Scroll up and down to reveal more choices)',
           );
         },
-        choices: ["(None)", ...availableBackendStack],
+        choices: ['(None)', ...availableBackendStack],
       }).run();
 
-      backend = backend === "(None)" ? null : backend;
+      backend = backend === '(None)' ? null : backend;
     }
 
     if (availableSmartContractStack) {
@@ -126,24 +127,24 @@ async function runFullCLI(
        * @type {string}
        */
       smartContract = await new AutoComplete({
-        name: "Smart Contract",
-        message: "Choose Smart Contract framework",
+        name: 'Smart Contract',
+        message: 'Choose Smart Contract framework',
         limit: 10,
         multiple: false,
         footer() {
           return pc.gray(
-            "\n(Start Typing/Scroll up and down to reveal more choices)"
+            '\n(Start Typing/Scroll up and down to reveal more choices)',
           );
         },
-        choices: ["(None)", ...availableSmartContractStack],
+        choices: ['(None)', ...availableSmartContractStack],
       }).run();
 
-      smartContract = smartContract === "(None)" ? null : smartContract;
+      smartContract = smartContract === '(None)' ? null : smartContract;
     }
   }
 
   // filter templates by queries
-  logger.start("Running your query");
+  logger.start('Running your query');
   // frontend
   if (frontend && frontend !== true)
     templates = templates
@@ -151,7 +152,7 @@ async function runFullCLI(
       .filter((template) =>
         template.stack.frontend
           .map((f) => f.toLowerCase())
-          .includes(frontend.toLowerCase())
+          .includes(frontend.toLowerCase()),
       );
   // backend
   if (backend && backend !== true)
@@ -160,7 +161,7 @@ async function runFullCLI(
       .filter((template) =>
         template.stack.backend
           .map((b) => b.toLowerCase())
-          .includes(backend.toLowerCase())
+          .includes(backend.toLowerCase()),
       );
   // smart contract
   if (smartContract && smartContract !== true)
@@ -169,7 +170,7 @@ async function runFullCLI(
       .filter((template) =>
         template.stack.smartContract
           .map((s) => s.toLowerCase())
-          .includes(smartContract.toLowerCase())
+          .includes(smartContract.toLowerCase()),
       );
 
   logger.succeed();
@@ -177,38 +178,38 @@ async function runFullCLI(
   if (templates.length === 0) {
     throw new Error(
       `No templates found for your query: ${
-        frontend ? `\nFrontend: ${frontend}` : ""
-      }${backend ? `\nBackend: ${backend}` : ""}${
-        smartContract ? `\nSmart Contract: ${smartContract}` : ""
-      }`
+        frontend ? `\nFrontend: ${frontend}` : ''
+      }${backend ? `\nBackend: ${backend}` : ''}${
+        smartContract ? `\nSmart Contract: ${smartContract}` : ''
+      }`,
     );
   }
 
   if (templates.length === 1) {
     template = templates[0];
 
-    logger.info("Found only 1 template with your specs:");
+    logger.info('Found only 1 template with your specs:');
     console.log();
     logger.succeed(
       `${template.name} ~ ${template.description} ${
         template.stack.frontend
-          ? `\nFrontend: ${template.stack.frontend.join(", ")}`
-          : ""
+          ? `\nFrontend: ${template.stack.frontend.join(', ')}`
+          : ''
       }${
         template.stack.backend
-          ? `\nBackend: ${template.stack.backend.join(", ")}`
-          : ""
+          ? `\nBackend: ${template.stack.backend.join(', ')}`
+          : ''
       }${
         template.stack.smartContract
-          ? `\nSmart Contract: ${template.stack.smartContract.join(", ")}`
-          : ""
-      }\n`
+          ? `\nSmart Contract: ${template.stack.smartContract.join(', ')}`
+          : ''
+      }\n`,
     );
 
     if (
       !(await new Confirm({
-        name: "confirm download",
-        message: "Want to use it?",
+        name: 'confirm download',
+        message: 'Want to use it?',
       }).run())
     ) {
       console.info(`
@@ -222,27 +223,27 @@ async function runFullCLI(
   } else {
     // Run fuzzy find templates
     const templateChoice = await new AutoComplete({
-      name: "template",
-      message: "Choose from Search Results",
+      name: 'template',
+      message: 'Choose from Search Results',
       limit: 10,
       multiple: false,
       footer() {
         return pc.gray(
-          "\n(Start Typing/Scroll up and down to reveal more choices)"
+          '\n(Start Typing/Scroll up and down to reveal more choices)',
         );
       },
       choices: templates.map(
         (template) =>
-          `${template.name} ~ ${pc.green(pc.italic(template.description))}`
+          `${template.name} ~ ${pc.green(pc.italic(template.description))}`,
       ),
     }).run();
 
-    templateId = templateChoice.split("~")[0].trim();
-    logger.start("Getting your Template...");
+    templateId = templateChoice.split('~')[0].trim();
+    logger.start('Getting your Template...');
 
     template = templates.find((t) => t.name == templateId);
 
-    logger.succeed("Found Template.");
+    logger.succeed('Found Template.');
   }
 
   await downloadTemplate(template.repository, destinationFolder);
@@ -262,16 +263,16 @@ async function runFullCLI(
 async function runTemplateDownloadCLI(templateId, destinationFolder) {
   if (!destinationFolder) {
     destinationFolder = await new Input({
-      message: "Enter the name of your project",
-      initial: "awesome-miniapp",
+      message: 'Enter the name of your project',
+      initial: 'awesome-miniapp',
     }).run();
   }
 
   if (!isDirectoryEmpty(destinationFolder)) {
-    throw new Error("Directory not empty.");
+    throw new Error('Directory not empty.');
   }
 
-  logger.start("Getting Templates");
+  logger.start('Getting Templates');
 
   const templates = await getCommunityTemplates();
 
@@ -280,25 +281,25 @@ async function runTemplateDownloadCLI(templateId, destinationFolder) {
   if (templateId === true) {
     // Run fuzzy find templates
     const templateChoice = await new AutoComplete({
-      name: "template",
-      message: "Choose your Template",
+      name: 'template',
+      message: 'Choose your Template',
       limit: 10,
       multiple: false,
       footer() {
         return pc.gray(
-          "\n(Start Typing/Scroll up and down to reveal more choices)"
+          '\n(Start Typing/Scroll up and down to reveal more choices)',
         );
       },
       choices: templates.map(
         (template) =>
-          `${template.name} ~ ${pc.green(pc.italic(template.description))}`
+          `${template.name} ~ ${pc.green(pc.italic(template.description))}`,
       ),
     }).run();
 
-    templateId = templateChoice.split("~")[0].trim();
+    templateId = templateChoice.split('~')[0].trim();
   }
 
-  logger.start("Finding your Template...");
+  logger.start('Finding your Template...');
 
   const template = templates.find((t) => t.name == templateId);
 
@@ -307,7 +308,7 @@ async function runTemplateDownloadCLI(templateId, destinationFolder) {
     throw new Error(`Template "${templateId}" not found in the registry.`);
   }
 
-  logger.succeed("Found Template.");
+  logger.succeed('Found Template.');
 
   await downloadTemplate(template.repository, destinationFolder);
 

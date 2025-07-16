@@ -1,16 +1,16 @@
-const gradient = require("gradient-string").default;
-const figlet = require("figlet");
+const gradient = require('gradient-string').default;
+const figlet = require('figlet');
 
 function renderTitle() {
   const figletConfig = {
-    font: "Pagga",
-    horizontalLayout: "fitted",
-    verticalLayout: "fitted",
+    font: 'Pagga',
+    horizontalLayout: 'fitted',
+    verticalLayout: 'fitted',
     whitespaceBreak: true,
   };
 
-  const title = gradient(["gold", "crimson", "purple"])(
-    figlet.textSync("Create Farcaster Miniapp", figletConfig)
+  const title = gradient(['gold', 'crimson', 'purple'])(
+    figlet.textSync('Create Farcaster Miniapp', figletConfig),
   );
 
   console.log();
@@ -24,13 +24,13 @@ function renderTitle() {
  */
 function renderFooter(projectName) {
   console.log();
-  console.log("✅ Scaffold complete.");
+  console.log('✅ Scaffold complete.');
   console.log(`📂 Your project is ready in ./${projectName}`);
   console.log();
   console.log(`👉 Next steps:`);
   console.log(`   cd ${projectName}`);
   console.log();
-  console.log(gradient.mind("🚀 Happy Building!!!"));
+  console.log(gradient.mind('🚀 Happy Building!!!'));
   console.log();
 }
 

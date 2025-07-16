@@ -4,8 +4,7 @@ A community-driven CLI to scaffold Farcaster MiniApps with frontend, backend, an
 
 Just like `npm create vite@latest`, this tool allows you to spin up a fully structured Farcaster MiniApp project by selecting a template or combining frameworks from a categorized registry.
 
-![Create Farcaster Miniapp CLI](images/cli.png)
----
+## ![Create Farcaster Miniapp CLI](images/cli.png)
 
 ## 📦 Installation
 
@@ -78,12 +77,10 @@ We encourage the community to add their own MiniApp templates!
 ```
 
 3. **Ensure your repo contains**:
-
    - A `README.md` with usage/setup instructions
    - Actual starter code for building miniapps on farcaster
 
 4. **Open a pull request** to this repository. The maintainers will review your PR for:
-
    - Metadata completeness
    - Functional structure
    - Category match

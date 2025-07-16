@@ -5,7 +5,8 @@
   "main": "bin/cli.js",
   "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write ."
   },
   "bin": {
     "create-farcaster-miniapp": "bin/cli.js"
@@ -34,5 +35,8 @@
     "minimist": "^1.2.8",
     "ora": "^8.2.0",
     "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
   }
 }

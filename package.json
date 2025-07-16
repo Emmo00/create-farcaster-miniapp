@@ -6,7 +6,9 @@
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "ci": "npm run check-format"
   },
   "bin": {
     "create-farcaster-miniapp": "bin/cli.js"

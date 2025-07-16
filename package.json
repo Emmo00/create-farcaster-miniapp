@@ -1,6 +1,6 @@
 {
   "name": "create-farcaster-miniapp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Community-driven CLI tool for scaffolding Farcaster MiniApps.",
   "main": "bin/cli.js",
   "type": "commonjs",

@@ -11,12 +11,42 @@
       }
     },
     {
-      "name": "base-minikit-starter",
+      "name": "builders-garden-minikit",
       "description": "Opinionated Farcaster MiniApp Next.js Template using Base Minikit",
       "repository": "https://github.com/builders-garden/base-minikit-starter",
       "stack": {
         "frontend": ["next", "minikit"],
         "backend": ["next"],
+        "smartContract": null
+      }
+    },
+    {
+      "name": "builders-garden-next",
+      "description": "Next.js Starter Kit for Farcaster Mini Apps",
+      "repository": "https://github.com/builders-garden/farcaster-miniapp-starter",
+      "stack": {
+        "frontend": ["next"],
+        "backend": ["next", "neynar"],
+        "smartContract": null
+      }
+    },
+    {
+      "name": "worldcoin-minikit-next",
+      "description": "A template for building Next.js mini-app compatible with Farcaster and Worldcoin",
+      "repository": "https://github.com/builders-garden/miniapp-next-template",
+      "stack": {
+        "frontend": ["next"],
+        "backend": ["next", "worldcoin"],
+        "smartContract": null
+      }
+    },
+    {
+      "name": "monad-miniapp",
+      "description": "A template for building Next.js mini-app compatible with Farcaster and Monad",
+      "repository": "https://github.com/monad-developers/monad-miniapp-template",
+      "stack": {
+        "frontend": ["next"],
+        "backend": ["next", "monad"],
         "smartContract": null
       }
     }

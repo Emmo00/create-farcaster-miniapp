@@ -57,7 +57,9 @@ async function runFullCLI(
             template.stack.frontend.length > 0,
         )
         .map((template) => template.stack.frontend)
-        .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
+        .reduce((acc, curr) => [...acc, ...curr], [])
+        .reduce((acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]), []) ??
+      null;
     const availableBackendStack =
       templates
         .filter(
@@ -66,7 +68,9 @@ async function runFullCLI(
             template.stack.backend.length > 0,
         )
         .map((template) => template.stack.backend)
-        .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
+        .reduce((acc, curr) => [...acc, ...curr], [])
+        .reduce((acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]), []) ??
+      null;
     const availableSmartContractStack =
       templates
         .filter(
@@ -75,7 +79,9 @@ async function runFullCLI(
             template.stack.smartContract.length > 0,
         )
         .map((template) => template.stack.smartContract)
-        .reduce((acc, curr) => [...acc, ...curr], []) ?? null;
+        .reduce((acc, curr) => [...acc, ...curr], [])
+        .reduce((acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]), []) ??
+      null;
 
     logger.succeed();
 
@@ -185,13 +191,18 @@ async function runFullCLI(
   logger.succeed();
 
   if (templates.length === 0) {
-    throw new Error(
-      `No templates found for your query: ${
+    console.warn(
+      `❌ No templates found for your query: ${
         frontend ? `\nFrontend: ${frontend}` : ''
       }${backend ? `\nBackend: ${backend}` : ''}${
         smartContract ? `\nSmart Contract: ${smartContract}` : ''
       }`,
     );
+    console.info(`
+        Found a cool template worth sharing? Contribute it to the community registry:
+        https://github.com/Emmo00/create-farcaster-miniapp
+      `);
+    process.exit();
   }
 
   if (templates.length === 1) {

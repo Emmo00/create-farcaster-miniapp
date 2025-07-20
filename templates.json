@@ -21,6 +21,16 @@
       }
     },
     {
+      "name": "celo-next",
+      "description": "Next.js Starter Kit for Farcaster Mini Apps on Celo",
+      "repository": "https://github.com/builders-garden/farcaster-miniapp-starter-celo",
+      "stack": {
+        "frontend": ["next"],
+        "backend": ["next", "neynar"],
+        "smartContract": null
+      }
+    },
+    {
       "name": "builders-garden-minikit",
       "description": "Opinionated Farcaster MiniApp Next.js Template using Base Minikit",
       "repository": "https://github.com/builders-garden/base-minikit-starter",

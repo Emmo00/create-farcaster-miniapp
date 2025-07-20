@@ -1,5 +1,7 @@
 const gradient = require('gradient-string').default;
+const { mind } = require('gradient-string');
 const figlet = require('figlet');
+const pc = require('picocolors');
 
 function renderTitle() {
   const figletConfig = {
@@ -28,9 +30,10 @@ function renderFooter(projectName) {
   console.log(`📂 Your project is ready in ./${projectName}`);
   console.log();
   console.log(`👉 Next steps:`);
-  console.log(`   cd ${projectName}`);
+  console.log(`   cd ./${projectName}`);
+  console.log(`   Checkout the ${pc.bgGreenBright('README.md')}`);
   console.log();
-  console.log(gradient.mind('🚀 Happy Building!!!'));
+  console.log(mind('🚀 Happy Building!!!'));
   console.log();
 }
 

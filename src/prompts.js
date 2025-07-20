@@ -58,8 +58,10 @@ async function runFullCLI(
         )
         .map((template) => template.stack.frontend)
         .reduce((acc, curr) => [...acc, ...curr], [])
-        .reduce((acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]), []) ??
-      null;
+        .reduce(
+          (acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]),
+          [],
+        ) ?? null;
     const availableBackendStack =
       templates
         .filter(
@@ -69,8 +71,10 @@ async function runFullCLI(
         )
         .map((template) => template.stack.backend)
         .reduce((acc, curr) => [...acc, ...curr], [])
-        .reduce((acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]), []) ??
-      null;
+        .reduce(
+          (acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]),
+          [],
+        ) ?? null;
     const availableSmartContractStack =
       templates
         .filter(
@@ -80,8 +84,10 @@ async function runFullCLI(
         )
         .map((template) => template.stack.smartContract)
         .reduce((acc, curr) => [...acc, ...curr], [])
-        .reduce((acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]), []) ??
-      null;
+        .reduce(
+          (acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]),
+          [],
+        ) ?? null;
 
     logger.succeed();
 

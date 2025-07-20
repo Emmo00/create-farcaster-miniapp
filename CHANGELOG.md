@@ -1,5 +1,11 @@
 # create-farcaster-miniapp
 
+## 1.0.3
+
+### Patch Changes
+
+- dbc63ec: fix list bug, better footer
+
 ## 1.0.2
 
 ### Patch Changes

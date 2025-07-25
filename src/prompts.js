@@ -38,7 +38,7 @@ async function runFullCLI({
     throw new Error('Directory not empty.');
   }
 
-  logger.start('Getting Templates');
+  logger.start('Getting Templates\n');
 
   let templates = await getCommunityTemplates();
 
@@ -352,7 +352,7 @@ async function runTemplateDownloadCLI(templateId, destinationFolder) {
     throw new Error('Directory not empty.');
   }
 
-  logger.start('Getting Templates');
+  logger.start('Getting Templates\n');
 
   const templates = await getCommunityTemplates();
 

@@ -34,6 +34,7 @@ create-farcaster-miniapp [options]
 --template <name>       Download and use a specific template
 --frontend <name>       Specify frontend framework
 --backend <name>        Specify backend framework
+--chain <name>          Specify Chain for the starter pack
 --smart-contract <name>  Specify smart contract template
 --help, -h              Show help
 ```
@@ -71,7 +72,8 @@ We encourage the community to add their own MiniApp templates!
   "stack": {
     "frontend": ["react"],
     "backend": null,
-    "smartContract": ["hardhat", "solidity"]
+    "smartContract": ["hardhat", "solidity"],
+    "chain": ["celo"]
   }
 }
 ```
@@ -95,7 +97,8 @@ Each template defines its stack via a `stack` object, so users can search and fi
 "stack": {
   "frontend": ["react"],
   "backend": null,
-  "smartContract": ["hardhat", "solidity"]
+  "smartContract": ["hardhat", "solidity"],
+  "chain": ["celo"]
 }
 ```
 

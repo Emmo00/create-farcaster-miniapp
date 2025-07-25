@@ -7,7 +7,8 @@
       "stack": {
         "frontend": ["react"],
         "backend": null,
-        "smartContract": null
+        "smartContract": null,
+        "chain": null
       }
     },
     {
@@ -17,7 +18,8 @@
       "stack": {
         "frontend": ["react"],
         "backend": null,
-        "smartContract": ["hardhat", "solidity"]
+        "smartContract": ["hardhat", "solidity"],
+        "chain": ["celo"]
       }
     },
     {
@@ -27,7 +29,8 @@
       "stack": {
         "frontend": ["next"],
         "backend": ["next", "neynar"],
-        "smartContract": null
+        "smartContract": null,
+        "chain": ["celo"]
       }
     },
     {
@@ -37,7 +40,8 @@
       "stack": {
         "frontend": ["next", "minikit"],
         "backend": ["next"],
-        "smartContract": null
+        "smartContract": null,
+        "chain": ["base"]
       }
     },
     {
@@ -47,7 +51,8 @@
       "stack": {
         "frontend": ["next"],
         "backend": ["next", "neynar"],
-        "smartContract": null
+        "smartContract": null,
+        "chain": null
       }
     },
     {
@@ -57,7 +62,8 @@
       "stack": {
         "frontend": ["next"],
         "backend": ["next", "worldcoin"],
-        "smartContract": null
+        "smartContract": null,
+        "chain": null
       }
     },
     {
@@ -66,8 +72,9 @@
       "repository": "https://github.com/monad-developers/monad-miniapp-template",
       "stack": {
         "frontend": ["next"],
-        "backend": ["next", "monad"],
-        "smartContract": null
+        "backend": ["next"],
+        "smartContract": null,
+        "chain": ["monad"]
       }
     }
   ]

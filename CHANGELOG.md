@@ -1,5 +1,11 @@
 # create-farcaster-miniapp
 
+## 2.0.0
+
+### Major Changes
+
+- 325c897: Add Chain filter/field to templates stack object
+
 ## 1.0.3
 
 ### Patch Changes

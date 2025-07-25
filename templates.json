@@ -12,6 +12,17 @@
       }
     },
     {
+      "name": "xerxes-next",
+      "description": "Farcaster Mini App Next.js Template",
+      "repository": "https://github.com/XerxesCoder/farcaster-miniapp",
+      "stack": {
+        "frontend": ["next"],
+        "backend": ["next"],
+        "smartContract": null,
+        "chain": null
+      }
+    },
+    {
       "name": "celo-factory",
       "description": "Basic React Frontend + Hardhat for building on CELO",
       "repository": "https://github.com/celo-org/farcaster-template",
@@ -31,6 +42,17 @@
         "backend": ["next", "neynar"],
         "smartContract": null,
         "chain": ["celo"]
+      }
+    },
+    {
+      "name": "arbitrum-factory",
+      "description": "Template to begin creating a Farcaster Mini-Apps with Arbitrum",
+      "repository": "https://github.com/hummusonrails/farcaster-arbitrum-miniapp-starter",
+      "stack": {
+        "frontend": ["react"],
+        "backend": null,
+        "smartContract": null,
+        "chain": ["arbitrum"]
       }
     },
     {
@@ -75,6 +97,17 @@
         "backend": ["next"],
         "smartContract": null,
         "chain": ["monad"]
+      }
+    },
+    {
+      "name": "xmtp-miniapp",
+      "description": "A template for building a mini-app with XMTP integrations",
+      "repository": "https://github.com/builders-garden/xmtp-mini-app-examples",
+      "stack": {
+        "frontend": ["next"],
+        "backend": ["node", "express", "xmtp"],
+        "smartContract": null,
+        "chain": null
       }
     }
   ]

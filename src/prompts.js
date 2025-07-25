@@ -13,17 +13,21 @@ const { renderFooter } = require('./utils.js');
  * @param {Object} params - The parameters for running the CLI.
  * @param {string} params.frontend - The frontend stack query.
  * @param {string} params.backend - The backend stack query.
+ * @param {string} params.chain - The chain pack query.
  * @param {string} params.smartContract - The smart contract stack query.
- * @param {string} destinationFolder - The destination folder for the scaffold.
+ * @param {string} params.destinationFolder - The destination folder for the scaffold.
  * @returns {Promise<void>} Resolves when the CLI process is complete.
  */
-async function runFullCLI(
-  { frontend, backend, smartContract },
+async function runFullCLI({
+  frontend,
+  backend,
+  chain,
+  smartContract,
   destinationFolder,
-) {
+}) {
   let template, templateId;
 
-  if (!destinationFolder) {
+  if (!destinationFolder || destinationFolder === true) {
     destinationFolder = await new Input({
       message: 'Enter the name of your project',
       initial: 'awesome-miniapp',
@@ -44,6 +48,7 @@ async function runFullCLI(
   if (
     (!frontend || frontend === true) &&
     (!backend || backend === true) &&
+    (!chain || chain === true) &&
     (!smartContract || smartContract === true)
   ) {
     // ask for all of them
@@ -70,6 +75,18 @@ async function runFullCLI(
             template.stack.backend.length > 0,
         )
         .map((template) => template.stack.backend)
+        .reduce((acc, curr) => [...acc, ...curr], [])
+        .reduce(
+          (acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]),
+          [],
+        ) ?? null;
+    const availableChains =
+      templates
+        .filter(
+          (template) =>
+            template.stack.chain !== null && template.stack.chain.length > 0,
+        )
+        .map((template) => template.stack.chain)
         .reduce((acc, curr) => [...acc, ...curr], [])
         .reduce(
           (acc, curr) => (acc.includes(curr) ? acc : [...acc, curr]),
@@ -133,6 +150,27 @@ async function runFullCLI(
       backend = backend === "(Don't Specify)" ? null : backend;
     }
 
+    if (availableChains) {
+      // Run fuzzy find chain to start with
+      /**
+       * @type {string}
+       */
+      chain = await new AutoComplete({
+        name: 'chain',
+        message: 'Choose Chain to start with',
+        limit: 10,
+        multiple: false,
+        footer() {
+          return pc.gray(
+            '\n(Start Typing/Scroll up and down to reveal more choices)',
+          );
+        },
+        choices: ["(Don't Specify)", '(None)', ...availableChains],
+      }).run();
+
+      chain = chain === "(Don't Specify)" ? null : chain;
+    }
+
     if (availableSmartContractStack) {
       // Run fuzzy find smart contract framework
       /**
@@ -180,6 +218,18 @@ async function runFullCLI(
   if (backend === '(None)')
     templates = templates.filter((template) => template.stack.backend === null);
 
+  // chain
+  if (chain && chain !== '(None)' && chain !== true)
+    templates = templates
+      .filter((template) => template.stack.chain !== null)
+      .filter((template) =>
+        template.stack.chain
+          .map((b) => b.toLowerCase())
+          .includes(chain.toLowerCase()),
+      );
+  if (chain === '(None)')
+    templates = templates.filter((template) => template.stack.chain === null);
+
   // smart contract
   if (smartContract && smartContract !== '(None)' && smartContract !== true)
     templates = templates
@@ -201,8 +251,8 @@ async function runFullCLI(
       `❌ No templates found for your query: ${
         frontend ? `\nFrontend: ${frontend}` : ''
       }${backend ? `\nBackend: ${backend}` : ''}${
-        smartContract ? `\nSmart Contract: ${smartContract}` : ''
-      }`,
+        chain ? `\nChain: ${chain}` : ''
+      }${smartContract ? `\nSmart Contract: ${smartContract}` : ''}`,
     );
     console.info(`
         Found a cool template worth sharing? Contribute it to the community registry:
@@ -224,6 +274,10 @@ async function runFullCLI(
       }${
         template.stack.backend
           ? `\nBackend: ${template.stack.backend.join(', ')}`
+          : ''
+      }${
+        template.stack.chain
+          ? `\nChain: ${template.stack.chain.join(', ')}`
           : ''
       }${
         template.stack.smartContract

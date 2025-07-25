@@ -13,13 +13,14 @@ renderTitle();
  *   template?: string,
  *   frontend?: string,
  *   backend?: string,
+ *   chain?: string,
  *   smartContract?: string
  *   help?: boolean
  *   h?: boolean
  * }}
  */
 const args = parseArguments(process.argv.slice(2));
-const { template, frontend, backend, smartContract, help, h } = args;
+const { template, frontend, backend, chain, smartContract, help, h } = args;
 
 if (help || h) {
   console.log(`
@@ -33,6 +34,7 @@ if (help || h) {
         --template <name>       Download and use a specific template
         --frontend <name>       Specify frontend framework
         --backend <name>        Specify backend framework
+        --chain <name>          Specify chain
         --smart-contract <name> Specify smart contract template
         --help, -h              Show help
 
@@ -54,7 +56,7 @@ if (template) {
       return process.exit(1);
     });
 } else {
-  runFullCLI({ frontend, backend, smartContract, destinationFolder })
+  runFullCLI({ frontend, backend, chain, smartContract, destinationFolder })
     .then(() => process.exit(0))
     .catch((error) => {
       logger.error(error.message ?? 'An Unexpected error occured');

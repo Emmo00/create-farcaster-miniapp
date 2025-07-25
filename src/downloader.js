@@ -60,6 +60,7 @@ async function downloadTemplate(templateRepoUrl, destinationPath) {
  *   stack: {
  *     frontend: string[] | null,
  *     backend: string[] | null,
+ *     chain: string[] | null,
  *     smartContract: string[] | null,
  *   }
  * }>>} A promise that resolves to an array of template objects.
